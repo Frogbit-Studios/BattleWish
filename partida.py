@@ -8,6 +8,7 @@ from config import *  # noqa: F401,F403
 import habilidades as hab
 import save
 import som
+import stamina
 import ult2
 from golpes import GOLPES
 from efeitos import Cenario, Impactos, fonte, mistura_cor, moeda, texto, texto_grande, texto_moedas
@@ -76,6 +77,8 @@ class Partida:
             self.L = [self.equipes[0][0], self.equipes[1][0]]
         for l in self.todos():
             l.regras = self.regras
+            if l.f.get("nome_base", l.f["nome"]) in getattr(self, "cicatrizes", ()):
+                l.extra["cicatriz"] = True  # CORTE VERTICAL (Katchade): a cicatriz fica até o fim da partida
         if getattr(self, "vida_inicial", None) is not None:
             self.L[0].vida = self.L[0].vida_vista = self.vida_inicial
         self.vida_comeco = self.L[0].vida
@@ -1382,6 +1385,8 @@ class Partida:
         if gw > 0:
             cor_g = (255, 120, 90) if l.guarda < 35 else (120, 200, 255)
             pygame.draw.rect(tela, cor_g, (gx + (int(larg * 0.55) - gw if i == 0 else 0), y + alt + 2, gw, 5))
+        # STAMINA (v4.0): barrinha verde embaixo da guarda
+        stamina.desenhar_barra(tela, l, gx, y + alt + 9, int(larg * 0.55), i, self.t_total)
         # nome
         nome = fonte(17).render(l.f["nome"], True, BRANCO)
         sombra = fonte(17).render(l.f["nome"], True, PRETO)
@@ -1481,6 +1486,9 @@ class Partida:
                 l.vida_vista = max(l.vida, l.vida_vista - 0.6)
             self.barra_vida(tela, i, l)
             self.barra_ultimate(tela, i, l)
+            # RECARGA dos especiais (v4.0): as letrinhas do lado da barra da ultimate
+            stamina.desenhar_recargas(tela, l, 34 + 230 + 12 if i == 0 else LARGURA - 34 - 230 - 12, ALTURA - 34,
+                                      i, fonte)
         import musica  # o RADINHO tocando a música (pequenininho, embaixo do nome do jogador 1)
         musica.desenhar_radio(tela, 36, 104, musica.nome_de(som.MUSICA_LUTA), self.t_total, 2)
         if not self.treino:  # o RANKING DE ESTILO (a letra) de cada lado

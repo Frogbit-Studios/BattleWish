@@ -397,6 +397,31 @@ def _pedra_runa(tela, x, t, usado, deitado=None):
     pygame.draw.line(tela, acesa, (x, CHAO - 36), (x - 8, CHAO - 44), 3)
 
 
+def _bolota(tela, x, t, usado, deitado=None):
+    """CAMPO GIGANTE (casa do KATCHADE): a BOLOTA gigante (o fruto do carvalho) — bateu: sai rolando."""
+    if usado and deitado is None:
+        return
+    casca, escura, chapeu, chapeu_e = (176, 120, 60), (120, 78, 36), (140, 104, 64), (96, 70, 40)
+    if deitado is not None:  # rolando: a bolota deitada girando
+        y = CHAO - 24
+        pygame.draw.circle(tela, escura, (int(x), int(y)), 25)
+        pygame.draw.circle(tela, casca, (int(x), int(y)), 21)
+        a = deitado
+        pygame.draw.line(tela, chapeu_e, (x - math.cos(a) * 21, y - math.sin(a) * 21),
+                         (x + math.cos(a) * 21, y + math.sin(a) * 21), 6)
+        pygame.draw.circle(tela, (230, 200, 150), (int(x + math.cos(a + 1) * 10), int(y + math.sin(a + 1) * 10)), 4)
+        return
+    # em pé: a bolota com o chapeuzinho e o cabinho
+    pygame.draw.ellipse(tela, escura, (x - 24, CHAO - 56, 48, 56))
+    pygame.draw.ellipse(tela, casca, (x - 20, CHAO - 52, 40, 50))
+    pygame.draw.ellipse(tela, (214, 160, 96), (x - 12, CHAO - 44, 10, 22))
+    pygame.draw.ellipse(tela, chapeu_e, (x - 27, CHAO - 66, 54, 24))
+    pygame.draw.ellipse(tela, chapeu, (x - 24, CHAO - 64, 48, 18))
+    for k in range(5):
+        pygame.draw.line(tela, chapeu_e, (x - 18 + k * 9, CHAO - 62), (x - 20 + k * 9, CHAO - 50), 2)
+    pygame.draw.line(tela, escura, (x, CHAO - 64), (x + 4, CHAO - 76), 4)
+
+
 def _boneco_palha(tela, x, t, usado, deitado=None):
     """MONTE KARASUMA (casa do INAZUMANEKO): o BONECO DE PALHA de treino (tomba e sai rolando)."""
     palha, palha_esc, corda, borda = (214, 182, 100), (160, 124, 60), (120, 60, 40), (60, 40, 20)
@@ -493,6 +518,7 @@ CONFIG = {
     "CAVERNA DOS MORCEGOS": dict(nome="CRISTAL ROXO", x=180, tipo="ONDA", desenho=_cristal, golpe=ONDA,
                                  cor=(200, 140, 255), som="laser"),
     "FLORESTA ANTIGA": dict(nome="PEDRA RÚNICA", x=205, tipo="ROLA", desenho=_pedra_runa, golpe=ROLANDO, som="terra"),
+    "CAMPO GIGANTE": dict(nome="BOLOTA GIGANTE", x=760, tipo="ROLA", desenho=_bolota, golpe=ROLANDO, som="terra"),
     "MONTE KARASUMA": dict(nome="BONECO DE PALHA", x=800, tipo="ROLA", desenho=_boneco_palha, golpe=ROLANDO,
                            som="terra"),
     "VILA DOS SAPOS": dict(nome="BALDE DE LAMA", x=190, tipo="CHAO", desenho=_balde_lama, golpe=ESCORREGA,

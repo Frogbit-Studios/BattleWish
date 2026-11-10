@@ -196,6 +196,17 @@ ROUPAS = {
             "h": (20, 18, 24), "H": (44, 40, 50), "o": (255, 40, 40), "w": (120, 120, 128), "W": (90, 90, 98),
             "l": (160, 160, 166), "b": (190, 30, 34)}, estilo="oni"),
     ],
+    "KATCHADE": [
+        dict(id="padrao", nome="ORIGINAL", preco=0),
+        dict(id="inverno", nome="INVERNO", preco=100, cor=(236, 244, 255), troca={  # quase todo branquinho, olho de gelo
+            "w": (255, 255, 255), "W": (214, 224, 242), "p": (232, 238, 252), "P": (186, 200, 236),
+            "m": (140, 166, 220), "e": (226, 244, 255), "E": (140, 196, 240), "a": (250, 252, 255),
+            "A": (206, 222, 246), "l": (240, 250, 255), "L": (176, 208, 240)}),
+        dict(id="samurai", nome="ESPADACHIM ERRANTE", preco=200, cor=(58, 62, 112), troca={  # inspirado no Musashi
+            "w": (236, 226, 212), "W": (198, 184, 166), "p": (150, 118, 140), "P": (108, 82, 104),
+            "m": (70, 58, 92), "e": (240, 220, 200), "E": (176, 140, 120), "a": (222, 212, 200),
+            "A": (178, 164, 148), "l": (214, 222, 232), "L": (146, 156, 174), "s": (56, 56, 66)}, estilo="samurai"),
+    ],
     "SILVANUS": [
         dict(id="padrao", nome="ORIGINAL", preco=0),
         dict(id="outono", nome="OUTONO", preco=100, cor=(210, 110, 40), troca={  # as folhas de outono, a boca vermelha

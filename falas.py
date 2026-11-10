@@ -1087,3 +1087,95 @@ ESPELHO_PROPRIO[_S] = [[(0, "Duas raízes. Uma terra."), (1, "Só uma fica.")],
                        [(0, "...Este não é seu lugar."), (1, "...Nem o seu.")]]
 RIBBAT_PROPRIO[_S] = [("...O que é você?", "...Ribbit."), ("Este não é seu lugar.", "RIBBIT!")]
 FRASES[_S] = "Este não é seu lugar."
+
+
+# KATCHADE, o louva-a-deus-orquídea (personagem 19, v4.0, do Gomes): calmo, fala POUCO, frases de PACIÊNCIA
+# (um monge caçador que espera a hora certa: "Quem tem pressa erra o golpe.")
+_K = "KATCHADE"
+_KATCHADE = {
+    "MAX-10": [
+        [("MAX-10", "INSETO DETECTADO. TAMANHO: ANORMAL."), (_K, "...Seus olhos medem. Os meus esperam.")],
+        [(_K, "Você faz barulho até parado."), ("MAX-10", "MOTORES NÃO SABEM FICAR EM SILÊNCIO.")],
+        [("MAX-10", "CALCULANDO PRÓXIMO MOVIMENTO DO ALVO..."), (_K, "Eu ainda nem decidi.")]],
+    "RIB": [
+        [("RIB", "Um louva-a-deus?! Sapo come inseto, sabia?"), (_K, "...E louva-a-deus come sapo.")],
+        [(_K, "Você pula demais, pequeno."), ("RIB", "E você fica parado demais! Tá dormindo?")],
+        [("RIB", "Ninja contra... sei lá o que você é!"), (_K, "Uma flor com lâminas.")]],
+    "TRAFO": [
+        [("TRAFO", "Grrr... vira inseto? Eu viro inseto!"), (_K, "Pode copiar as foices. A paciência, não.")],
+        [(_K, "Tanta forma... e nenhuma calma."), ("TRAFO", "AUUU! Calma é chato!")],
+        [("TRAFO", "Grrr... cheiro de flor."), (_K, "É o cheiro da armadilha.")]],
+    "KING RIP": [
+        [("KING RIP", "Você reza antes de lutar, inseto?"), (_K, "Eu rezo DURANTE.")],
+        [(_K, "Velho mestre. Você também sabe esperar."), ("KING RIP", "Esperei setenta anos. Posso esperar mais um round.")],
+        [("KING RIP", "Na minha época, os insetos ficavam no jardim."), (_K, "Eu sou o jardim.")]],
+    "CANNAN": [
+        [("CANNAN", "Alvo camuflado na vegetação. Câmbio."), (_K, "...Você me achou. Ou eu deixei?")],
+        [(_K, "Suas botas assustam a grama."), ("CANNAN", "Soldado não anda na ponta do pé.")],
+        [("CANNAN", "Nunca vi um inimigo tão parado."), (_K, "Parado não é desarmado.")]],
+    "FINN": [
+        [("FINN", "Uau! Um louva-a-deus gigante! Posso estudar você?"), (_K, "...Depois da luta. Se você ainda quiser.")],
+        [(_K, "Sua magia brilha. Brilho chama caçador."), ("FINN", "Opa. Vou brilhar mais baixinho.")],
+        [("FINN", "Tem feitiço pra ficar paciente assim?"), (_K, "Tem. Chama esperar.")]],
+    "KUN": [
+        [("KUN", "Aposto tudo que você ataca primeiro."), (_K, "Perdeu a aposta.")],
+        [(_K, "Você embaralha rápido. Eu corto mais rápido."), ("KUN", "Quer apostar?")],
+        [("KUN", "Qual é a sua carta na manga?"), (_K, "Não tenho manga.")]],
+    "TROMOS": [
+        [("TROMOS", "Hssssss..."), (_K, "Dois caçadores. Só um come.")],
+        [(_K, "Você também espera no escuro."), ("TROMOS", "*clic-clic-clic*")],
+        [("TROMOS", "*KREEEEEE*"), (_K, "Gritar espanta a presa.")]],
+    "TAI": [
+        [("TAI", "Você é tão magrinho! Uma empurrada e cai!"), (_K, "Empurre. Se me achar.")],
+        [(_K, "Pé firme no chão. Bom."), ("TAI", "Hakkeyoi! Pelo menos alguém respeita o sumô!")],
+        [("TAI", "Sai do meu círculo, bichinho!"), (_K, "Eu já estava aqui antes do círculo.")]],
+    "TAMER": [
+        [("TAMER", "Fica atrás de mim, garoto. Esse inseto caça igual a gente."), (_K, "Igual, não. Melhor.")],
+        [(_K, "Seu lobo sente meu cheiro."), ("TAMER", "E ele não gostou.")],
+        [("TAMER", "Já cacei de tudo. Nunca uma flor com foice."), (_K, "Hoje é a flor que caça.")]],
+    "JOHN": [
+        [("JOHN", "Para o meu próximo truque: fazer um inseto sumir!"), (_K, "Eu sumo sozinho.")],
+        [(_K, "Seu coelho treme."), ("JOHN", "Ele é tímido! Não olha assim pra ele!")],
+        [("JOHN", "Respeitável público: o louva-a-deus!"), (_K, "...Não aplaudam. Assusta.")]],
+    "CRÁQUEN": [
+        [("CRÁQUEN", "Arrr! Um bicho de jardim no meu caminho!"), (_K, "O caminho também é jardim.")],
+        [(_K, "Oito braços. Muita pressa."), ("CRÁQUEN", "Hahaha! Oito é melhor que duas foices, marujo!")],
+        [("CRÁQUEN", "Vai virar isca de peixe!"), (_K, "Peixe nenhum chega no campo.")]],
+    "MAGNUS": [
+        [("MAGNUS", "*RRAAWR!*"), (_K, "Fogo no meu campo, não.")],
+        [(_K, "Pequeno dragão. Grande barulho."), ("MAGNUS", "*snif... snif...*")],
+        [("MAGNUS", "*FWOOSH!*"), (_K, "...Errou. Agora é minha vez.")]],
+    "FRIGANTUS": [
+        [("FRIGANTUS", "*GRUUUAAH!*"), (_K, "Inverno é bom. A presa fica lenta.")],
+        [(_K, "Tão grande... e tão aberto."), ("FRIGANTUS", "*UH-UH-UH!*")],
+        [("FRIGANTUS", "*fuuuuh...*"), (_K, "Frio. As pétalas fecham. As foices, não.")]],
+    "SPHYRUS": [
+        [("SPHYRUS", "*GROOOAR!*"), (_K, "Dentes demais. Paciência de menos.")],
+        [(_K, "Você também caça."), ("SPHYRUS", "*CHOMP!*")],
+        [("SPHYRUS", "*SPLASH!*"), (_K, "...Molhou minhas pétalas.")]],
+    "INAZUMANEKO": [
+        [("INAZUMANEKO", "Duas foices contra uma katana."), (_K, "Duas foices contra duas katanas. Eu contei.")],
+        [(_K, "Você espera também, samurai."), ("INAZUMANEKO", "Esperar é metade do corte.")],
+        [("INAZUMANEKO", "Sua postura é perfeita."), (_K, "A sua tem um furo. Eu vi.")]],
+    "NOCTURNUS": [
+        [("NOCTURNUS", "*IIIIII!*"), (_K, "Shhh. Grito assusta a presa.")],
+        [(_K, "Asas no escuro. Eu também tenho asas."), ("NOCTURNUS", "*hihihi...*")],
+        [("NOCTURNUS", "*SKREEE!*"), (_K, "Morcego come inseto. Hoje, não.")]],
+    "SILVANUS": [
+        [("SILVANUS", "Este não é seu lugar."), (_K, "O campo é meu lugar. A floresta é o seu.")],
+        [(_K, "Flor contra flor."), ("SILVANUS", "Só uma tem raiz.")],
+        [("SILVANUS", "Você caça na grama."), (_K, "E você na terra. Somos vizinhos.")]],
+}
+for _outro, _convs in _KATCHADE.items():
+    _chave = tuple(sorted((_K, _outro)))
+    CONVERSAS[_chave] = _convs[0]
+    MAIS[_chave] = _convs[1:]
+# o RIVAL (rivais.py): o INAZUMANEKO (lâmina contra lâmina, paciência contra paciência)
+RIVAIS_CONVERSAS[tuple(sorted((_K, "INAZUMANEKO")))] = [
+    [("INAZUMANEKO", "Louva-a-deus. Disseram que você corta mais rápido que eu."), (_K, "Disseram errado. Eu corto antes.")],
+    [(_K, "Desembainhe, samurai."), ("INAZUMANEKO", "Quando a minha lâmina sair, a luta já acabou.")],
+    [("INAZUMANEKO", "Contra-ataque contra contra-ataque... quem ataca primeiro?"), (_K, "...Ninguém. Por isso é bonito.")]]
+ESPELHO_PROPRIO[_K] = [[(0, "Duas foices. Duas preces."), (1, "Uma resposta.")],
+                       [(0, "...Você também está esperando."), (1, "...Sempre.")]]
+RIBBAT_PROPRIO[_K] = [("...Um sapo de coroa?", "...Ribbit."), ("Quem tem pressa erra o golpe.", "RIBBIT!")]
+FRASES[_K] = "Quem tem pressa erra o golpe."

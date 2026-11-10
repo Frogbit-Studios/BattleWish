@@ -677,6 +677,65 @@ def silvanus_desenhar(v, d, tela, t):
             pygame.draw.circle(tela, (255, 220, 80), (int(topo[0]), int(topo[1])), max(1, int(7 * s * abre)))
 
 
+# =====================================================================
+# KATCHADE: FLOR FECHADA! (pétalas gigantes saem do chão em volta do derrotado e FECHAM nele, que nem um botão
+# de flor; depois o botão balança... e solta umas pétalas)
+# =====================================================================
+KAT_BROTA, KAT_FECHA, KAT_PRONTO = 14, 50, 80
+
+
+def katchade_passo(v, d, t, jogo):
+    pose(v, "k_reza")
+    if t == KAT_BROTA:
+        som.tocar("terra", 0.6)
+        poeira(jogo, d.x, 6)
+    if t == KAT_FECHA:
+        som.tocar("puf", 0.7)
+    if t >= KAT_FECHA + 8:
+        d.esconde = True  # (já está dentro do botão)
+    if t == KAT_PRONTO:
+        som.tocar("blip", 0.6)
+
+
+def katchade_desenhar(v, d, tela, t):
+    if t < KAT_BROTA:
+        return
+    s = d.s
+    if t < KAT_FECHA or "flor_x" not in d.extra:  # (segue o corpo até fechar: ele ainda pode estar escorregando)
+        d.extra["flor_x"] = (ponto_do_caido(d, "pc")[0] + ponto_do_caido(d, "qd")[0]) / 2
+    meio = d.extra["flor_x"]
+    sobe = suave(min(1, (t - KAT_BROTA) / 22))
+    fecha = suave(max(0, min(1, (t - KAT_BROTA - 16) / (KAT_FECHA - KAT_BROTA - 16))))
+    balanca = math.sin(t * 0.12) * 4 * s if t >= KAT_PRONTO else 0
+    alto = 110 * s * sobe
+    # o caule e as folhas
+    pygame.draw.line(tela, (30, 60, 26), (meio, CHAO + 4), (meio + balanca, CHAO - 14 * s), max(4, int(8 * s)))
+    for lado in (-1, 1):
+        pts = [(meio, CHAO - 4), (meio + lado * 70 * s * sobe, CHAO - 22 * s * sobe), (meio + lado * 30 * s, CHAO - 2)]
+        contorno(tela, (80, 150, 66), pts)
+    # as 5 pétalas: abertas (deitadas pros lados) -> fechadas (em pé, juntinhas formando o botão)
+    for k, lado in enumerate((-1.0, -0.55, 0.0, 0.55, 1.0)):
+        ang_aberta = lado * 1.35
+        ang = ang_aberta * (1 - fecha) + lado * 0.18 * fecha
+        larg = (34 if k != 2 else 40) * s
+        base = (meio + lado * 18 * s * (1 - fecha) + balanca, CHAO - 10 * s)
+        dx, dy = math.sin(ang), -math.cos(ang)
+        ponta = (base[0] + dx * alto, base[1] + dy * alto)
+        nx, ny = -dy, dx
+        pts = [base, (base[0] + dx * alto * 0.5 + nx * larg / 2, base[1] + dy * alto * 0.5 + ny * larg / 2), ponta,
+               (base[0] + dx * alto * 0.5 - nx * larg / 2, base[1] + dy * alto * 0.5 - ny * larg / 2)]
+        cor = (246, 170, 206) if k % 2 == 0 else (230, 130, 182)
+        contorno(tela, cor, pts)
+        pygame.draw.line(tela, (255, 226, 240), base, ((base[0] + ponta[0]) / 2, (base[1] + ponta[1]) / 2),
+                         max(1, int(2 * s)))
+    if t >= KAT_PRONTO and (t // 10) % 3 == 0:  # pétalas soltando do botão
+        for k in range(3):
+            u = (t + k * 7) % 30
+            x = meio + (k - 1) * 20 * s + math.sin(t * 0.1 + k) * 10 * s
+            y = CHAO - alto + u * 3 * s
+            pygame.draw.circle(tela, (250, 160, 202), (int(x), int(y)), max(2, int(3 * s)))
+
+
 FINISHES = {
     "MAX-10": dict(passo=max_passo, desenhar=max_desenhar, nome="RECICLADO!"),
     "RIB": dict(passo=rib_passo, desenhar=rib_desenhar, nome="PRESO NO CHÃO!"),
@@ -697,6 +756,7 @@ FINISHES = {
     "INAZUMANEKO": dict(passo=inazumaneko_passo, desenhar=inazumaneko_desenhar, nome="CORTE DE CABELO!"),
     "NOCTURNUS": dict(passo=nocturnus_passo, desenhar=nocturnus_desenhar, nome="PENDURADO!"),
     "SILVANUS": dict(passo=silvanus_passo, desenhar=silvanus_desenhar, nome="ADUBO!"),
+    "KATCHADE": dict(passo=katchade_passo, desenhar=katchade_desenhar, nome="FLOR FECHADA!"),
 }
 
 

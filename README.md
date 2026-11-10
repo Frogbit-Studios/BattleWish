@@ -2,11 +2,11 @@
 
 <h1 align="center">BATTLE WISH</h1>
 
-<p align="center">Um jogo de luta 2D estilo Street Fighter, com 18 personagens próprios, pixel art, combos, ultimates e online com os amigos.</p>
+<p align="center">Um jogo de luta 2D estilo Street Fighter, com 19 personagens próprios, pixel art, combos, ultimates e online com os amigos.</p>
 
 <p align="center"><b><a href="https://github.com/ielgomesjf-web/BattleWish/releases/latest">⬇️ Baixar o jogo (Windows)</a></b></p>
 
-![Silvanus contra o Nocturnus na Floresta Antiga](imagens/v3_luta.png)
+![Katchade contra o Inazumaneko no Campo Gigante](imagens/v4_luta.png)
 
 ## Como baixar e jogar
 
@@ -18,6 +18,20 @@
 
 Funciona no Windows 10 e 11. O save (moedas, roupas, troféus, figurinhas) fica num arquivo `battlewish_save.json`
 do lado do jogo. Quem já jogava as versões antigas continua com tudo.
+
+## Novidades da versão 4.0
+
+- **STAMINA**: uma barrinha verde embaixo da guarda. Cada ataque gasta um pouco (o EX gasta mais) e ela volta quando
+  você para de atacar. Se zerar, o lutador fica **CANSADO** por um instante: não anda nem ataca, só defende. Ficar
+  apertando sem parar agora tem preço!
+- **RECARGA nos especiais**: depois de usar o E, Q, R ou SHIFT, ele leva um tempinho pra voltar (as letrinhas do lado
+  da barra da ultimate mostram).
+- **Computador mais esperto**: pune quem fica spammando ou cansa, faz combos de verdade, aprende o que você mais
+  repete (pular, defender em pé, atirar de longe...) e muda o jeito de lutar a cada round.
+- **Lutador novo: KATCHADE**, o louva-a-deus-orquídea (agora são 19), com a casa dele, o **Campo Gigante**: a luta
+  do tamanho de um inseto, no meio da grama gigante.
+
+![Silvanus contra o Nocturnus na Floresta Antiga](imagens/v3_luta.png)
 
 ## Novidades da versão 3.0
 
@@ -73,6 +87,7 @@ do lado do jogo. Quem já jogava as versões antigas continua com tudo.
 | **INAZUMANEKO** | o tigre samurai: cortes em meia-lua, passo relâmpago e os MIL CORTES |
 | **NOCTURNUS** | o morcego-escorpião: bola de eco que troca os controles, nuvem de morcegos e a CANÇÃO DE NINAR |
 | **SILVANUS** | a planta carnívora guardiã da floresta: cospe sementes, planta ARMADILHAS e chama a CHUVA DE SEMENTES |
+| **KATCHADE** | o louva-a-deus-orquídea: corte cruzado, bote que agarra, POSTURA DE ORAÇÃO que devolve o golpe e o CORTE VERTICAL |
 
 Cada um tem 4 especiais, duas ULTIMATES, uma habilidade própria, entrada, pose de vitória e roupas pra comprar na
 loja. E tem segredo escondido na tela de **CÓDIGOS**: as pistas ficam lá e na loja...

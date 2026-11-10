@@ -283,6 +283,14 @@ class Jogo:
             extra = f"   controles: {n}" if n else ""
             texto(t, "WASD escolhe   A/D dificuldade   ENTER confirma   F11 tela cheia   (dúvidas? COMO JOGAR)" + extra, 15,
                   BRANCO, (LARGURA // 2, 460))
+        if not hasattr(self, "selo_frogbit"):  # assinatura do estúdio, no canto
+            try:
+                pasta = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
+                self.selo_frogbit = pygame.image.load(os.path.join(pasta, "frogbit_selo_2x.png")).convert_alpha()
+            except (pygame.error, FileNotFoundError):
+                self.selo_frogbit = None
+        if self.selo_frogbit:
+            t.blit(self.selo_frogbit, (12, ALTURA - self.selo_frogbit.get_height() - 10))
 
     def escolher(self, tecla):
         """Treino: escolhe a cor do boneco."""
@@ -853,6 +861,10 @@ def pasta_do_jogo():
 if __name__ == "__main__":
     try:
         jogo = Jogo()
+        if "--robo-online" not in sys.argv:  # a abertura da FROGBIT STUDIO (qualquer tecla pula)
+            import frogbit_abertura
+            if not frogbit_abertura.tocar(jogo.tela):
+                pygame.quit(); sys.exit()
         if "--robo-online" in sys.argv:  # o "robô da MARIA": cria uma sala e luta sozinho (pra testar o online)
             from online import Online
             pygame.display.set_caption("Battle Wish (robô da MARIA)")

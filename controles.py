@@ -138,6 +138,8 @@ class Computador:
         self.plano = []
         self.espera = 0
         self.segurando = 5
+        import ia
+        self.cerebro = ia.Cerebro(nivel)  # BOT ESPERTO (v4.0): pune spam, aprende com você, varia o estilo
 
     @staticmethod
     def botao(eu, tipo):
@@ -155,6 +157,7 @@ class Computador:
         self.parry_espera -= 1
         if getattr(jogo, "choque", None):  # CHOQUE: aperta botão o mais rápido que der
             return Entrada(5, random.random() < self.APERTA_CHOQUE.get(self.nivel, 0.15))
+        self.cerebro.observar(eu, ele, jogo)
         g_dele = ele.golpe if ele.estado == "ataque" else None
         no_normal = g_dele is not None and not g_dele.get("especial")  # (escapar NO MEIO de especial é paia: só de soco/chute)
         if (eu.estado in ("golpeado", "voando") and ele.combo >= 4 and eu.barra >= ESCAPE_CUSTO and no_normal
@@ -176,6 +179,9 @@ class Computador:
             if b in self.BOTOES:
                 return Entrada(d, especial=b)
             return Entrada(d, b == "s", b == "c")
+        urgente = self.cerebro.urgente(eu, ele, jogo, self.reacao)  # combo, cansaço, punir, spam
+        if urgente is not None:
+            return urgente
 
         frente = 6 if ele.x > eu.x else 4
         tras = 10 - frente
@@ -185,6 +191,8 @@ class Computador:
         def esp(tipo):
             b = self.botao(eu, tipo)
             recarga = self.RECARGA[self.nivel] if tipo == "longe" else self.RECARGA[self.nivel] // 3
+            if tipo != "ultimate" and not self.cerebro.pode(eu, b):
+                return Entrada(self.segurando)  # (recarga do jogo ou sem stamina)
             if not b or self.relogio - self.usou.get(b, -9999) < recarga:
                 return Entrada(self.segurando)  # ainda recarregando: faz outra coisa
             self.usou[b] = self.relogio
@@ -219,7 +227,7 @@ class Computador:
             if b and not ele.golpe.get("proj") and random.random() < 0.5:
                 self.usou[b] = self.relogio
                 return Entrada(5, especial=b)
-            if ataque and self.parry_espera <= 0 and random.random() < self.parry:  # tenta o parry
+            if ataque and self.parry_espera <= 0 and random.random() < self.parry * self.cerebro.mult_parry():  # tenta o parry
                 self.parry_espera = PARRY_BOT_ESPERA
                 baixo = ele.golpe["nivel"] == "baixo"
                 falta = max(0, ele.golpe["ini"] - ele.t - 3 + random.randint(-4, 4))  # às vezes erra o tempo
@@ -233,7 +241,7 @@ class Computador:
 
         # ---- anti-aéreo: ele pulou em cima de mim ----
         pulou_perto = not ele.no_chao() and ele.y > 0 and dist < 150 and ele.t >= self.reacao
-        if livre and pulou_perto and random.random() < self.chance * 0.15:
+        if livre and pulou_perto and random.random() < self.chance * 0.15 * self.cerebro.mult_anti():
             b = self.botao(eu, "anti")
             if b:
                 return Entrada(5, especial=b)
@@ -246,6 +254,11 @@ class Computador:
 
         if not livre:
             return Entrada(5)
+        neutro = self.cerebro.neutro(eu, ele, jogo)  # estilo do round, o que aprendeu, a própria stamina
+        if neutro is not None:
+            if not (neutro.soco or neutro.chute or neutro.especial):
+                self.segurando = neutro.dir
+            return neutro
         if eu.barra >= BARRA_TOTAL and eu.tem_ult2() and dist < 600 and random.random() < 0.3:
             return Entrada(5, especial="Z2")  # 2ª ULTIMATE (a amarela encheu)
         gz = GOLPES.get(eu.f.get("golpes", PADRAO).get("Z", ""), {})
@@ -256,7 +269,7 @@ class Computador:
             self.segurando = frente  # (chega perto pra soltar a ultimate)
         x = random.random()
         if dist > 280:
-            if x < 0.25:
+            if x < 0.25 * self.cerebro.mult_longe():
                 return esp("longe")
             self.segurando = frente
         elif dist > 110:

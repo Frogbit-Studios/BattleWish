@@ -47,6 +47,7 @@ KITS = {
                            de=0.4, fundo="cratera"),
     "CAVERNA DOS MORCEGOS": dict(racha="pedra", entulho=("pedra", "cristal"), caem=("estalactite", "cristal"), de=0.0,
                                  fundo="buraco"),
+    "CAMPO GIGANTE": dict(racha="terra", entulho=("terra", "folha"), caem=("folha",), de=0.0, fundo="cratera"),
     "FLORESTA ANTIGA": dict(racha="pedra", entulho=("pedra", "galho"), caem=("galho", "folha"), de=0.05,
                             fundo="buraco"),
 }

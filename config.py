@@ -93,7 +93,7 @@ PROVOCA_TEMPO = 70         # quadros parado provocando
 PROVOCA_BARRA = 120        # quanto enche da barra da ultimate (de 1000) se não apanhar
 
 # ---- online ----
-VERSAO = "3.0"      # os dois PCs precisam da mesma versão (o online confere)
+VERSAO = "4.0"      # os dois PCs precisam da mesma versão (o online confere)
 
 # ---- botão de BARRA (F no teclado, LT no controle) ----
 BARRA_TECLA = pygame.K_f

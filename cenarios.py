@@ -1427,6 +1427,141 @@ class FlorestaAntiga(Base):
                                                        (cx + math.sin(a) * r * 0.6, cy - math.cos(a) * r)])
 
 
+# =====================================================================
+# CAMPO GIGANTE (Katchade, v4.0, ideia do Gomes): a luta é do tamanho de um INSETO — folhas de grama GIGANTES
+# balançando, trevos do tamanho de guarda-chuva, um DENTE-DE-LEÃO enorme soltando sementes, gotas de orvalho
+# brilhando, uma joaninha e uma formiga lá no fundo, e a ORQUÍDEA rosa gigante (a casa do Katchade) no meio
+# =====================================================================
+LAMINAS_CAMPO = [  # (x da base, altura, curva, largura, cor) — as folhas de grama da FRENTE que balançam
+    (18, 470, 70, 34, (74, 150, 60)), (96, 380, -50, 26, (92, 170, 70)), (870, 450, -80, 32, (70, 144, 56)),
+    (930, 360, 40, 26, (96, 176, 72)), (300, 210, 30, 18, (104, 182, 80)), (650, 240, -36, 20, (100, 178, 76)),
+]
+
+
+def _lamina(sup, x, h, curva, larg, cor, balanco=0.0, escala=1.0):
+    """Uma folha de grama gigante: base larga no chão, sobe curvando e termina pontuda."""
+    pts_e, pts_d = [], []
+    n = 10
+    for k in range(n + 1):
+        f = k / n
+        dx = (curva + balanco) * f * f
+        y = CHAO - h * f
+        w = larg * (1 - f) ** 0.8 / 2
+        pts_e.append(((x + dx - w) / escala, y / escala))
+        pts_d.append(((x + dx + w) / escala, y / escala))
+    pygame.draw.polygon(sup, mistura_cor(cor, (20, 40, 20), 0.35), pts_e + pts_d[::-1])
+    meio = [((a[0] + b[0]) / 2, a[1]) for a, b in zip(pts_e, pts_d)]
+    pygame.draw.polygon(sup, cor, pts_e[:-1] + meio[::-1][1:])
+    pygame.draw.lines(sup, mistura_cor(cor, (230, 255, 200), 0.3), False, meio[:-1], max(1, int(2 / escala)))
+
+
+class CampoGigante(Base):
+    nome = "CAMPO GIGANTE"
+
+    def _fundo(self):
+        sup = pygame.Surface((LARGURA, ALTURA))
+        _degrade(sup, (0, 0, LARGURA, CHAO), (150, 210, 250), (214, 238, 220))  # o céu claro de manhã
+        rnd = random.Random(91)
+        # nuvens fofas
+        for cx, cy, r in ((150, 70, 34), (190, 62, 40), (230, 74, 30), (700, 50, 30), (740, 44, 38), (780, 56, 28)):
+            pygame.draw.circle(sup, (250, 252, 255), (cx, cy), r)
+        # o MATO lá do fundo (silhuetas de folhas gigantes, apagadas pela distância)
+        for i in range(34):
+            x = rnd.uniform(-20, LARGURA + 20)
+            _lamina(sup, x, rnd.uniform(220, 380), rnd.uniform(-60, 60), rnd.uniform(16, 30),
+                    mistura_cor((110, 170, 110), (190, 226, 210), rnd.uniform(0.3, 0.6)))
+        # o DENTE-DE-LEÃO gigante (caule fino, a bola branca de sementes lá em cima)
+        dx, dy = 790, 120
+        pygame.draw.line(sup, (96, 150, 70), (dx + 30, CHAO), (dx, dy), 8)
+        for k in range(46):
+            a = k * math.tau / 46
+            r = 58 + (k % 3) * 4
+            pygame.draw.line(sup, (236, 240, 236), (dx, dy), (dx + math.cos(a) * r, dy + math.sin(a) * r), 2)
+            pygame.draw.circle(sup, (255, 255, 255), (int(dx + math.cos(a) * r), int(dy + math.sin(a) * r)), 4)
+        pygame.draw.circle(sup, (200, 190, 150), (dx, dy), 10)
+        # a JOANINHA numa folha do fundo
+        jx, jy = 200, 250
+        _lamina(sup, 190, CHAO - 238, 30, 26, (110, 176, 90))
+        pygame.draw.ellipse(sup, (210, 40, 40), (jx - 18, jy - 12, 36, 24))
+        pygame.draw.line(sup, (30, 20, 20), (jx, jy - 12), (jx, jy + 12), 2)
+        for px_, py_ in ((-9, -4), (8, -3), (-6, 6), (7, 6)):
+            pygame.draw.circle(sup, (30, 20, 20), (jx + px_, jy + py_), 3)
+        pygame.draw.circle(sup, (30, 20, 20), (jx + 18, jy), 7)
+        # a ORQUÍDEA gigante no meio (a casa do Katchade): 5 pétalas rosas e o miolo
+        ox, oy = 470, 230
+        pygame.draw.line(sup, (80, 140, 64), (ox - 10, CHAO), (ox, oy + 40), 12)
+        pygame.draw.ellipse(sup, (80, 150, 66), (ox - 110, CHAO - 120, 100, 40))  # folhas da orquídea
+        pygame.draw.ellipse(sup, (70, 140, 60), (ox + 4, CHAO - 104, 110, 38))
+        for k in range(5):
+            a = -math.pi / 2 + k * math.tau / 5
+            cx, cy = ox + math.cos(a) * 52, oy + math.sin(a) * 44
+            pygame.draw.ellipse(sup, (214, 102, 160), (cx - 46, cy - 34, 92, 68))
+            pygame.draw.ellipse(sup, (246, 170, 206), (cx - 40, cy - 28, 80, 56))
+            pygame.draw.ellipse(sup, (255, 226, 240), (cx - 22, cy - 14, 44, 28))
+        pygame.draw.circle(sup, (184, 52, 126), (ox, oy), 26)
+        pygame.draw.circle(sup, (255, 210, 90), (ox, oy), 14)
+        pygame.draw.circle(sup, (255, 240, 170), (ox - 4, oy - 4), 5)
+        # TREVOS gigantes (do tamanho de guarda-chuva)
+        for tx, ty, tam in ((330, CHAO - 150, 40), (620, CHAO - 130, 36)):
+            pygame.draw.line(sup, (70, 130, 56), (tx, CHAO), (tx, ty), 6)
+            for k in range(3):
+                a = -math.pi / 2 + (k - 1) * 2.1
+                cx, cy = tx + math.cos(a) * tam * 0.8, ty + math.sin(a) * tam * 0.5
+                pygame.draw.circle(sup, (60, 132, 52), (int(cx), int(cy)), tam)
+                pygame.draw.circle(sup, (88, 168, 70), (int(cx), int(cy)), tam - 5)
+                pygame.draw.arc(sup, (160, 220, 140), (cx - tam * 0.6, cy - tam * 0.6, tam * 1.2, tam * 1.2), 0.5, 2.4, 3)
+        # o CHÃO: terra com pedrinhas (do tamanho de pedregulho pra um inseto) e raízes
+        _degrade(sup, (0, CHAO, LARGURA, ALTURA - CHAO), (122, 92, 58), (70, 50, 32))
+        pygame.draw.line(sup, (96, 160, 70), (0, CHAO), (LARGURA, CHAO), 4)
+        for i in range(18):
+            x, y = rnd.uniform(0, LARGURA), CHAO + rnd.uniform(8, 50)
+            r = rnd.uniform(6, 16)
+            pygame.draw.ellipse(sup, (150, 140, 128), (x - r, y - r * 0.6, r * 2, r * 1.2))
+            pygame.draw.ellipse(sup, (186, 178, 166), (x - r * 0.6, y - r * 0.5, r, r * 0.5))
+        for i in range(30):  # brotinhos de grama no chão
+            x = rnd.uniform(0, LARGURA)
+            pygame.draw.line(sup, (90, 160, 70), (x, CHAO + 2), (x + rnd.uniform(-6, 6), CHAO - rnd.uniform(8, 20)), 3)
+        return sup
+
+    def __init__(self):
+        super().__init__()
+        rnd = random.Random(92)
+        self.sementes = [[rnd.uniform(0, LARGURA), rnd.uniform(40, CHAO), rnd.uniform(0.3, 0.8), rnd.uniform(0, 6)]
+                         for _ in range(12)]
+        self.orvalho = [(rnd.uniform(60, 900), rnd.uniform(200, CHAO - 40), rnd.uniform(0, 6)) for _ in range(9)]
+
+    def animar(self, tela, t, px):
+        # a FORMIGA andando lá no fundo, na linha do chão
+        fx = (t * 0.6) % (LARGURA + 120) - 60
+        fy = CHAO - 6
+        for k in range(3):
+            pygame.draw.circle(tela, (40, 26, 22), (int((fx - k * 9) / px), int(fy / px)), max(1, int((5 - k) / px)))
+        for k in range(3):
+            perna = math.sin(t * 0.4 + k) * 3
+            pygame.draw.line(tela, (40, 26, 22), ((fx - 9 + k * 5) / px, fy / px),
+                             ((fx - 11 + k * 5 + perna) / px, (fy + 6) / px), 1)
+        # as SEMENTES do dente-de-leão voando (paraquedinhas)
+        for s in self.sementes:
+            s[0] = (s[0] + s[2]) % (LARGURA + 40)
+            y = s[1] + math.sin(t * 0.02 + s[3]) * 18
+            x = s[0] - 20
+            pygame.draw.line(tela, (230, 230, 220), (x / px, y / px), (x / px, (y + 8) / px), 1)
+            for k in range(5):
+                a = -math.pi + k * math.pi / 4
+                pygame.draw.line(tela, (255, 255, 255), (x / px, y / px),
+                                 ((x + math.cos(a) * 6) / px, (y + math.sin(a) * 4) / px), 1)
+        # as GOTAS DE ORVALHO brilhando
+        for x, y, f in self.orvalho:
+            k = max(0.0, math.sin(t * 0.04 + f))
+            r = max(1, int(4 / px))
+            pygame.draw.circle(tela, (190, 230, 255), (int(x / px), int(y / px)), r)
+            if k > 0.7:
+                pygame.draw.circle(tela, (255, 255, 255), (int(x / px - r * 0.3), int(y / px - r * 0.3)), max(1, r // 2))
+        # as FOLHAS DE GRAMA da frente balançando no vento
+        for i, (x, h, curva, larg, cor) in enumerate(LAMINAS_CAMPO):
+            _lamina(tela, x, h, curva, larg, cor, math.sin(t * 0.03 + i * 1.7) * 14, px)
+
+
 SECRETOS = {"VILA DOS SAPOS": "ULTRA-MEGA-VILLAGE"}  # cenário: código que libera
 
 
@@ -1442,7 +1577,8 @@ CENARIOS = {"TEMPLO": Templo, "PÂNTANO": Pantano, "FERRO-VELHO": FerroVelho, "T
             "VILA DOS SAPOS": VilaSapos, "TEATRO DE MÁGICA": Teatro,
             "NAVIO FANTASMA": NavioFantasma, "CERCADO DO DESERTO": CercadoDeserto,
             "PRAIA DA ILHA": PraiaIlha, "MONTANHA NEVADA": MontanhaNevada, "MONTE KARASUMA": MonteKarasuma,
-            "CAVERNA DOS MORCEGOS": CavernaMorcegos, "FLORESTA ANTIGA": FlorestaAntiga}
+            "CAVERNA DOS MORCEGOS": CavernaMorcegos, "FLORESTA ANTIGA": FlorestaAntiga,
+            "CAMPO GIGANTE": CampoGigante}
 _prontos = {}
 
 

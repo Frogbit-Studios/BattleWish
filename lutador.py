@@ -7,6 +7,7 @@ from config import *  # noqa: F401,F403
 import habilidades as hab
 import pecas
 import som
+import stamina  # (v4.0: STAMINA e RECARGA dos especiais, contra o spam)
 from golpes import GOLPES, POSES, misturar, suave
 import provocacao  # noqa: F401  (registra o golpe "provocar")
 
@@ -142,6 +143,7 @@ class Lutador:
         self.invisivel = 0         # PODER MÁGICO (Finn): quadros que ainda fica invisível
         self.as_t = 0              # ÁS NA MANGA (Kun): quadros contando até o ás acender
         self.as_ativo = 0          # ÁS NA MANGA: quadros que o ás ainda fica aceso
+        stamina.iniciar(self)      # STAMINA (v4.0): ataques gastam; zerou = CANSADO
 
     # ------------------------------------------------------------ ajudas
     def no_chao(self):
@@ -191,7 +193,7 @@ class Lutador:
         self.flash_mutacao = 30
         som.tocar("puf")
 
-    def comecar(self, nome):
+    def comecar(self, nome, pagar=False):
         g = GOLPES[nome]
         if self.extra.get("nadando"):
             return False  # NATAÇÃO (Sphyrus): nadando ele não ataca
@@ -205,6 +207,11 @@ class Lutador:
                 return False  # barra ainda não encheu
         elif g.get("proj") and not g.get("varios") and self.projetil and self.projetil.vivo:
             return False  # só uma bola por vez
+        if pagar:  # STAMINA: golpe pedido pelo jogador paga (EX paga 25% a mais)
+            vai_ex = (g.get("especial") and not g.get("ultimate") and getattr(self, "ex_pedido", False)
+                      and self.barra >= EX_CUSTO and nome != "provocar")
+            if not stamina.pagar(self, nome, g, vai_ex):
+                return False
         if g.get("ultimate"):
             self.barra = 0 if g.get("ultimate2") else max(0, self.barra - BARRA_MAX)  # (a 1ª gasta só a azul)
             self.pediu_ultimate = True
@@ -237,7 +244,12 @@ class Lutador:
             botao = "Z2"  # EX + ULTIMATE (M3 2x + Z / LT + RT) com a amarela cheia = 2ª ULTIMATE
         nome = self.golpe_do_botao(botao) if botao else None
         self.botao_pedido = botao
-        return bool(nome) and self.comecar(nome)
+        if not nome or not stamina.pode_especial(self, botao):  # RECARGA: o especial ainda não voltou
+            return False
+        if self.comecar(nome, pagar=True):
+            stamina.usou_especial(self, botao, GOLPES[nome])
+            return True
+        return False
 
     def janelas(self):
         g = self.golpe
@@ -296,6 +308,7 @@ class Lutador:
 
     def _update(self, e, outro, jogo):
         self.t += 1
+        stamina.passo(self)
         self.ex_pedido = bool(getattr(e, "barra", False))  # segurando a BARRA: o próximo especial sai EX
         if getattr(e, "barra_toque", False) and self.pode_escapar():
             self.escapar(outro, jogo)
@@ -370,7 +383,17 @@ class Lutador:
         if est == "agarrado":
             return  # quem agarrou controla tudo (agarrão, ultimate que sempre acerta)
 
-        if est in LIVRE:
+        if est in LIVRE and stamina.preso(self) and self.no_chao():
+            # CANSADO (stamina zerou): não anda, não pula, não ataca até encher. Só defende parado.
+            if self.no_chao() and abs(outro.x - self.x) > 2:
+                self.dir = 1 if outro.x > self.x else -1
+                self.r = self.rel(e.dir)
+            self.vx = 0
+            self.buffer, self.buffer_t = None, 0
+            quer = "agachado" if self.r in (1, 2, 3) else "parado"
+            if est != quer:
+                self.mudar(quer)
+        elif est in LIVRE:
             if self.no_chao() and abs(outro.x - self.x) > 2:
                 self.dir = 1 if outro.x > self.x else -1  # sempre de frente pro outro
                 self.r = self.rel(e.dir)
@@ -382,7 +405,7 @@ class Lutador:
                 self.comecar("provocar")
             elif self.buffer:
                 botao, self.buffer, self.buffer_t = self.buffer, None, 0
-                self.comecar(("ag_" if r in (1, 2, 3) else "") + botao)
+                self.comecar(("ag_" if r in (1, 2, 3) else "") + botao, pagar=True)
             elif r in (7, 8, 9):
                 self.pulo_r = r
                 self.vx = 0
@@ -416,7 +439,7 @@ class Lutador:
                 if prox in CADEIA.get(self.nome_golpe, ()):
                     self.buffer, self.buffer_t = None, 0
                     self.cadeia += 1
-                    if self.comecar(prox):
+                    if self.comecar(prox, pagar=True):
                         return self.fisica(jogo)
             # jogou o outro pra cima e acertou: aperta pra CIMA e pula atrás dele (pulo de perseguição)
             if (g.get("lanca") or g.get("lanca_depois")) and self.acertou and self.r in (7, 8, 9) and self.no_chao() \
@@ -473,7 +496,7 @@ class Lutador:
                     self.vx, self.vy = outro.vx, min(outro.vy, 0) - 2
             if not self.ja_atacou and self.buffer:
                 botao, self.buffer, self.buffer_t = self.buffer, None, 0
-                self.comecar("ar_" + botao)
+                self.comecar("ar_" + botao, pagar=True)
 
         elif est == "tonto":  # guarda quebrada ou paralisado: não faz nada por um tempinho
             self.vx *= 0.8
@@ -521,7 +544,7 @@ class Lutador:
 
     def pode_rolar(self):
         """Dá pra rolar: no chão, livre (ou começando um soco/chute normal) e sem estar nadando."""
-        if not self.no_chao() or getattr(self, "rola_espera", 0) > 0 or self.extra.get("nadando"):
+        if not self.no_chao() or getattr(self, "rola_espera", 0) > 0 or self.extra.get("nadando")                 or stamina.preso(self):
             return False
         if self.estado in LIVRE:
             return True
@@ -1128,6 +1151,10 @@ class Lutador:
             self.f["cansado_efeito"](self, grande)
         elif self.estado == "tonto":
             self.desenhar_estrelas(grande)
+        if getattr(self, "cansado", False) and self.estado in LIVRE:  # CANSADO: suor pingando
+            p = self.pose_vista or self.pose_atual()
+            cx, cy = self.ponto(p, "cb")
+            stamina.desenhar_cansado(grande, self, self.t, cx, cy - 20 * self.s)
 
     def efeito_habilidade(self):
         """Tem algum desenho de habilidade aparecendo agora? (ás, fumaça do Maquinário, brilhos)"""

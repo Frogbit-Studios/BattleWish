@@ -52,6 +52,8 @@ HABILIDADES = {
     "jardim": dict(nome="JARDIM VIVO", desc="cada armadilha no mapa: +7% de força (até 5 = +35%)"),
     "enganador": dict(nome="ENGANADOR SELVAGEM", desc="X + ataque: FINGE o golpe (0,5 s) e pode trocar por outro; 1x a cada 3 s"),
     "vantagem": dict(nome="VANTAGEM POR CIMA", desc="adversário AGACHADO: os ataques dele ficam 15% mais fortes"),
+    "camuflagem": dict(nome="CAMUFLAGEM", desc="parado 2 s: some na flor (meio transparente); o próximo golpe bate +30%"),
+    "foices_afiadas": dict(nome="FOICES AFIADAS", desc="golpe que acerta deixa um CORTE brilhando: tira mais 5 em 2 s"),
     "poder_samurai": dict(nome="PODER SAMURAI", desc="parado 3 s: por 3 s os golpes dão VENENO, FOGO, RAIO ou GELO (sorteado)"),
 }
 
@@ -107,6 +109,8 @@ def ligada(l, h):
         return getattr(l, "quadros", 0) < l.extra.get("furia_ate", -1)
     if h == "emboscada":
         return bool(l.extra.get("camuflado")) or l.extra.get("emboscada_id") is not None
+    if h == "camuflagem":  # (KATCHADE)
+        return bool(l.extra.get("camuflado")) or l.extra.get("camufla_id") is not None
     if h == "alquimia":  # (acende enquanto a poção de força/velocidade está fazendo efeito)
         return l.extra.get("pocao_forca", 0) > 0 or l.extra.get("pocao_veloz", 0) > 0
     if h == "ninja":  # (acende quando a SUBSTITUIÇÃO está pronta)
@@ -134,6 +138,9 @@ def mult_causa(l, g):
         m *= FURIA_DANO  # FÚRIA DO SUMÔ (Tai)
     if l.extra.get("emboscada_id") is not None and l.extra.get("emboscada_id") == getattr(l, "golpe_id", -1):
         m *= EMBOSCADA_DANO  # EMBOSCADA (Tromos): o golpe que saiu da camuflagem
+    if l.extra.get("camufla_id") is not None and l.extra.get("camufla_id") == getattr(l, "golpe_id", -1):
+        import katchade
+        m *= katchade.CAMUFLA_DANO  # CAMUFLAGEM (Katchade): o golpe que saiu da flor
     if "eletro" in hs:
         m *= padrao_caca(l, g)  # PADRÃO DE CAÇA (Sphyrus)
     if "eco" in hs:
@@ -210,6 +217,9 @@ def mult_vel(l):
         m *= ECO_MULT.get(l.extra.get("eco_nivel", "normal"), 1.0)  # ECOLOCALIZAÇÃO (Nocturnus)
     if l.extra.get("neve_t", 0) > 0:  # NEVASCA (Frigantus): o gelo grudando deixa mais lento
         m *= 1 - NEVE_LENTO * l.extra.get("neve", 0)
+    if l.extra.get("cicatriz"):  # CORTE VERTICAL (2ª ultimate do Katchade): mais lento até o fim da partida
+        import katchade
+        m *= katchade.CICATRIZ_VEL
     return m
 
 
@@ -257,6 +267,9 @@ def mult_recebe(l, atacante=None, g=None):
     hs = ativas(l)
     if atacante is not None and atacante is not l and "vantagem" in ativas(atacante) and             (l.estado == "agachado" or (l.estado == "defendendo" and getattr(l, "agachado_def", False))):
         m *= VANTAGEM_DANO  # VANTAGEM POR CIMA (Silvanus): bateu em quem está AGACHADO
+    if l.extra.get("cicatriz"):  # CORTE VERTICAL (Katchade): menos resistência até o fim da partida
+        import katchade
+        m *= katchade.CICATRIZ_DANO
     if "colete" in hs and atacante is not l and de_longe(l, atacante, g):
         m *= COLETE_DEFESA
     if "maquinario" in hs and ligada(l, "maquinario"):
@@ -449,6 +462,10 @@ def substituicao(l, g, atacante):
     — ou se o INAZUMANEKO pegou no CONTRA-ATAQUE."""
     if contra_samurai(l, g, atacante):
         return True
+    if l.estado == "ataque" and l.nome_golpe == "katch_reza":
+        import katchade
+        if katchade.reza_pega(l, g, atacante):  # POSTURA DE ORAÇÃO do KATCHADE
+            return True
     if "ninja" not in ativas(l) or l.extra.get("subst_espera", 0) > 0 or l.vida <= 0:
         return False
     if not g or g.get("ultimate") or g.get("ultimate2") or atacante is None or atacante is l:

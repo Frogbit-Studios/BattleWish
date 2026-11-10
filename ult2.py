@@ -2591,13 +2591,13 @@ ULT2 = {"MAX-10": "max_ult2", "RIB": "rib_ult2", "TRAFO": "trafo_ult2", "KING RI
         "CANNAN": "cannan_ult2", "FINN": "finn_ult2", "KUN": "kun_ult2", "TROMOS": "xeno_ult2", "TAI": "tai_ult2",
         "TAMER": "tamer_ult2", "JOHN": "john_ult2", "CRÁQUEN": "craquen_ult2", "MAGNUS": "magnus_ult2",
         "SPHYRUS": "sphyrus_ult2", "FRIGANTUS": "frigantus_ult2", "INAZUMANEKO": "inaz_ult2",
-        "NOCTURNUS": "noct_ult2", "SILVANUS": "silv_ult2"}
+        "NOCTURNUS": "noct_ult2", "SILVANUS": "silv_ult2", "KATCHADE": "katch_ult2"}
 NOMES = {"MAX-10": "CHUVA DE MÍSSEIS", "RIB": "SHURIKEN GIGANTE", "TRAFO": "BRAÇOS DE TERRA",
          "KING RIP": "ESPÍRITO DO DOJO", "CANNAN": "A MINIGUN", "FINN": "GOLEM DE PEDRA", "KUN": "TSUNAMI DE CARTAS",
          "TROMOS": "CAÇADA NO ESCURO", "TAI": "TERREMOTO", "TAMER": "LUA CHEIA", "JOHN": "A RAVINA",
          "CRÁQUEN": "KRAKEN / TRIPULAÇÃO FANTASMA", "MAGNUS": "MODO FORNALHA", "SPHYRUS": "ANCESTRAL / CARDUME / TORNADO",
          "FRIGANTUS": "ERA DO GELO", "INAZUMANEKO": "MIL CORTES",
-         "NOCTURNUS": "CANÇÃO DE NINAR", "SILVANUS": "CHUVA DE SEMENTES"}
+         "NOCTURNUS": "CANÇÃO DE NINAR", "SILVANUS": "CHUVA DE SEMENTES", "KATCHADE": "CORTE VERTICAL"}
 
 
 def ligar(fichas):

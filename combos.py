@@ -32,6 +32,8 @@ TROCAS = {
               4: ("PARALISA E VOA", ["chute", "E", "ar_soco", "ar_chute"], 40, "o linguão paralisa: pula (W) e bate no ar")},
     "SPHYRUS": {4: ("MARTELADA COMPLETA", ["soco", "chute", "Q"], 40, "soco, chute e a martelada pra cima")},
     "FRIGANTUS": {2: ("CANCELA NO ESPECIAL", ["soco", "chute", "SHIFT"], 20, "soco, chute e já escorrega de barriga")},
+    "KATCHADE": {2: ("CORTE CRUZADO", ["soco", "soco", "E"], 20, "dois socos e já cruza as foices"),
+                 3: ("BOTE", ["soco", "Q"], 20, "o soco acertou? salta e agarra com as foices")},
     "SILVANUS": {2: ("SEMENTE NA CARA", ["soco", "soco", "E"], 20, "dois socos e já cospe a semente nele"),
                  3: ("CUSPE RÁPIDO", ["soco", "chute", "E"], 20, "soco, chute e cospe (o Q é armadilha: fica no chão)"),
                  4: ("JARDIM DE PANCADA", ["soco", "soco", "R"], 40, "dois socos e as plantinhas brotam embaixo dele")},
@@ -123,6 +125,8 @@ class TreinoCombos:
         eu.dir, boneco.dir = 1, -1
         eu.barra = BARRA_MAX
         partida.projeteis = []
+        for l in (eu, boneco):  # (treino de combo: sem STAMINA nem RECARGA, pra repetir à vontade)
+            l.regras.add("sem_cansaco")
 
     # ---- acertos ----
     def acertou(self, nome, ativacao, combo):

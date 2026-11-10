@@ -37,6 +37,7 @@ import frigantus
 import inazumaneko
 import nocturnus
 import silvanus
+import katchade
 from kun import entrada as entrada_kun
 from kun import entrada_efeito as entrada_efeito_kun
 from kun import figura_extra as figura_kun
@@ -228,6 +229,14 @@ PERSONAGENS = [
          vitoria=silvanus.vitoria, vitoria_efeito=silvanus.vitoria_efeito, vitoria_atras=silvanus.vitoria_atras,
          provocacao_quadros=silvanus.PROVOCACAO_QUADROS, nomes=dict(silvanus.NOMES),
          habilidade="jardim", habilidades_opcoes=("jardim", "enganador", "vantagem"), cenario="FLORESTA ANTIGA"),
+    # (v4.0) o 19º: KATCHADE, o louva-a-deus-orquídea (paciência e contra-ataque)
+    dict(nome="KATCHADE", cor=(246, 166, 202), vida=95, vel=4.0, pulo=16.5, forca=0.85, tam=1.3,
+         cor_poder=(255, 190, 230), desenho=katchade.desenhar_katchade, golpes=katchade.GOLPES_KATCHADE,
+         poses=katchade.POSES_KATCHADE, todo_quadro=katchade.todo_quadro, desenhar_sempre=katchade.desenhar_sempre,
+         provocacao="...", provocacao_quadros=katchade.PROVOCACAO_QUADROS, nomes=dict(katchade.NOMES),
+         habilidade="camuflagem", habilidades_opcoes=("camuflagem", "foices_afiadas"), cenario="CAMPO GIGANTE",
+         retrato_zoom=0.62, retrato_dy=14, entrada=katchade.entrada, entrada_efeito=katchade.entrada_efeito,
+         vitoria=katchade.vitoria),
 ]
 
 
@@ -235,6 +244,7 @@ import ult2  # noqa: E402
 ult2._registra("inaz_ult2", inazumaneko.mil_cortes, inazumaneko.mil_cortes_efeito, [(0, "parado")])  # (MIL CORTES)
 ult2._registra("noct_ult2", nocturnus.cancao, nocturnus.cancao_efeito, [(0, "parado")])  # (CANÇÃO DE NINAR)
 ult2._registra("silv_ult2", silvanus.chuva, silvanus.chuva_efeito, [(0, "parado")])  # (CHUVA DE SEMENTES)
+ult2._registra("katch_ult2", katchade.corte_vertical, katchade.corte_vertical_efeito, [(0, "parado")])  # (CORTE VERTICAL)
 ult2.ligar(PERSONAGENS)  # as 2ª ULTIMATES (botão "Z2")
 import provocacoes_loja  # noqa: E402,F401  (as provocações da LOJA)
 import vitorias_loja  # noqa: E402,F401  (as poses de vitória da LOJA)
@@ -248,7 +258,7 @@ SECRETOS = [RIBBAT]
 
 
 # ENTRADA (v2.0): a pose em que cada um espera pra falar (o Rib faz o selo de mão, o Tai joga o sal...)
-ESPERA = {'MAX-10': 'vitoria', 'RIB': 'r_selo', 'TRAFO': 't_agacha', 'KING RIP': 'k_bastao', 'CANNAN': 'c_continencia', 'FINN': 'f_carrega', 'KUN': 'k_brinca', 'TROMOS': 'x_vitoria', 'TAI': 't_sal', 'TAMER': 't_carinho', 'JOHN': 'j_agradece', 'CRÁQUEN': 'q_espera', 'MAGNUS': 'm_fareja', 'SPHYRUS': 's_ruge', 'FRIGANTUS': 'fr_peito_a', 'INAZUMANEKO': 'i_curva', 'NOCTURNUS': 'n_ri', 'SILVANUS': 's_ergue'}
+ESPERA = {'MAX-10': 'vitoria', 'RIB': 'r_selo', 'TRAFO': 't_agacha', 'KING RIP': 'k_bastao', 'CANNAN': 'c_continencia', 'FINN': 'f_carrega', 'KUN': 'k_brinca', 'TROMOS': 'x_vitoria', 'TAI': 't_sal', 'TAMER': 't_carinho', 'JOHN': 'j_agradece', 'CRÁQUEN': 'q_espera', 'MAGNUS': 'm_fareja', 'SPHYRUS': 's_ruge', 'FRIGANTUS': 'fr_peito_a', 'INAZUMANEKO': 'i_curva', 'NOCTURNUS': 'n_ri', 'SILVANUS': 's_ergue', 'KATCHADE': 'k_reza'}
 for _f in PERSONAGENS:
     _f.setdefault("espera", ESPERA.get(_f["nome"], "vitoria"))
 for _f in SECRETOS:
